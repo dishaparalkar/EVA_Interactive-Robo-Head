@@ -52,15 +52,30 @@ The firmware is built around a **finite-state behavioural model** and a **cooper
 
 ## Demo
 
-> Replace these with your own GIFs/clips — this is the single highest-leverage thing you can add for recruiters skimming GitHub.
+## Demo
 
-| Normal Mode | Observation Mode | Radar Visualization | Phone Wi-Fi Control |
-|:---:|:---:|:---:|:---:|
-| ![normal](<img width="1080" height="1436" alt="Normal mode" src="https://github.com/user-attachments/assets/8790b31f-ba0e-424a-b7bb-7c28e20ea975" />
-) | ![observation](<img width="1080" height="1275" alt="Observation" src="https://github.com/user-attachments/assets/3c053729-7b49-4e9b-adf1-af3998aeccfa" />
-) | ![radar](<img width="1080" height="917" alt="Radar" src="https://github.com/user-attachments/assets/a1a5ae53-a058-4698-a916-48faa5dab6b5" />
-) | ![wifi](<img width="1200" height="1600" alt="wifi ready" src="https://github.com/user-attachments/assets/959a1eff-768f-41e7-9c14-cf1714da53b3" />
-) |
+<table>
+  <tr>
+    <th>Normal Mode</th>
+    <th>Observation Mode</th>
+    <th>Radar Visualization</th>
+    <th>Wi-Fi Control</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/eva_normal.jpg" width="220">
+    </td>
+    <td align="center">
+      <img src="docs/images/eva_observation.jpg" width="220">
+    </td>
+    <td align="center">
+      <img src="docs/images/radar_visualization.jpg" width="220">
+    </td>
+    <td align="center">
+      <img src="docs/images/wifi_control_ui.jpg" width="220">
+    </td>
+  </tr>
+</table>
 
 ## Features
 
