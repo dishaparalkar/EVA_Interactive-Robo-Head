@@ -36,7 +36,6 @@
 - [Getting Started](#getting-started)
 - [Skills Demonstrated](#skills-demonstrated)
 - [References](#references)
-- [License](#license)
 
 ---
 
@@ -361,10 +360,6 @@ eva-esp32-robotic-head/
 8. Adafruit SSD1306 Library documentation
 9. ESP32Servo Library documentation
 10. Processing IDE 4 documentation
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
