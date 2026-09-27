@@ -5,7 +5,7 @@
 > An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization using an ESP32 with a cooperative non-blocking scheduler.
 
 <p align="center">
-  <img src="docs/images/eva_front.jpg" width="400" alt="EVA Interactive Robotic Head">
+  <img src="doc/images/Normal mode.jpeg" width="400" alt="EVA Interactive Robotic Head">
 </p>
 
 ---
@@ -57,7 +57,7 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 ## EVA Physical Prototype
 
 <p align="center">
-  <img src="docs/images/eva_front.jpg" width="400" alt="EVA physical prototype">
+  <img src="doc/images/Normal mode.jpeg" width="400" alt="EVA physical prototype">
 </p>
 
 ---
@@ -72,11 +72,11 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 
 <tr>
 <td align="center">
-<img src="docs/images/eva_normal.jpg" width="280" alt="EVA Normal Mode">
+<img src="doc/images/Normal mode.jpeg" width="280" alt="EVA Normal Mode">
 </td>
 
 <td align="center">
-<img src="docs/images/eva_observation.jpg" width="280" alt="EVA Observation Mode">
+<img src="doc/images/Observation.jpeg" width="280" alt="EVA Observation Mode">
 </td>
 </tr>
 </table>
@@ -86,7 +86,7 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 ## Radar Visualization
 
 <p align="center">
-  <img src="docs/images/radar_visualization.jpg" width="550" alt="EVA radar visualization">
+  <img src="doc/images/Radar.jpeg" width="550" alt="EVA radar visualization">
 </p>
 
 ---
@@ -94,7 +94,7 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 ## Wi-Fi Control Prototype
 
 <p align="center">
-  <img src="docs/images/wifi_control_ui.jpg" width="500" alt="EVA Wi-Fi control interface">
+  <img src="doc/images/wifi ready.jpeg" width="500" alt="EVA Wi-Fi control interface">
 </p>
 
 ---
@@ -188,7 +188,7 @@ HC-SR04 ECHO
     GND
 ```
 
-<p align="center"><img src="docs/images/circuit_diagram.png" width="640" alt="Full circuit diagram"/></p>
+<p align="center"><img src="doc/images/circuit_dia.jpeg" width="640" alt="Full circuit diagram"/></p>
 
 ## Firmware architecture
 
@@ -271,7 +271,7 @@ RADAR,90,45.2,1
 
 A companion **Processing** sketch parses this stream and renders a live 0°–180°, 0–100 cm radar sweep with per-angle detection history.
 
-<p align="center"><img src="docs/images/radar_visualization.jpg" width="480" alt="Radar visualization"/></p>
+<p align="center"><img src="doc/images/Radar.jpeg" width="480" alt="Radar visualization"/></p>
 
 ## Bonus: phone Wi-Fi control
 
