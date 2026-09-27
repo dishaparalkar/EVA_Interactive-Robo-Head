@@ -54,14 +54,6 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 
 # Demo
 
-## EVA Physical Prototype
-
-<p align="center">
-  <img src="doc/images/Normal mode.jpeg" width="400" alt="EVA physical prototype">
-</p>
-
----
-
 ## Operating Modes
 
 <table>
