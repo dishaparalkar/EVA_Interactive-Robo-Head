@@ -30,7 +30,6 @@
 - [Getting started](#getting-started)
 - [Testing & validation](#testing--validation)
 - [Skills demonstrated](#skills-demonstrated)
-- [Future work](#future-work)
 - [References](#references)
 - [License](#license)
 
@@ -56,7 +55,11 @@ The firmware is built around a **finite-state behavioural model** and a **cooper
 
 | Normal Mode | Observation Mode | Radar Visualization | Phone Wi-Fi Control |
 |:---:|:---:|:---:|:---:|
-| ![normal](docs/images/normal_mode_faces.jpg) | ![observation](docs/images/observation_mode.jpg) | ![radar](docs/images/radar_visualization.jpg) | ![wifi](docs/images/wifi_control_ui.jpg) |
+| ![normal](<img width="1080" height="1436" alt="Normal mode" src="https://github.com/user-attachments/assets/8790b31f-ba0e-424a-b7bb-7c28e20ea975" />
+) | ![observation](<img width="1080" height="1275" alt="Observation" src="https://github.com/user-attachments/assets/3c053729-7b49-4e9b-adf1-af3998aeccfa" />
+) | ![radar](<img width="1080" height="917" alt="Radar" src="https://github.com/user-attachments/assets/a1a5ae53-a058-4698-a916-48faa5dab6b5" />
+) | ![wifi](<img width="1200" height="1600" alt="wifi ready" src="https://github.com/user-attachments/assets/959a1eff-768f-41e7-9c14-cf1714da53b3" />
+) |
 
 ## Features
 
@@ -141,7 +144,8 @@ HC-SR04 ECHO
     GND
 ```
 
-<p align="center"><img src="docs/images/circuit_diagram.png" width="640" alt="Full circuit diagram"/></p>
+<p align="center"><img src="<img width="1600" height="1080" alt="circuit_dia" src="https://github.com/user-attachments/assets/ad97a304-1bfa-495c-b434-3368d1ca69db" />
+" width="640" alt="Full circuit diagram"/></p>
 
 ## Firmware architecture
 
@@ -224,7 +228,8 @@ RADAR,90,45.2,1
 
 A companion **Processing** sketch parses this stream and renders a live 0°–180°, 0–100 cm radar sweep with per-angle detection history.
 
-<p align="center"><img src="docs/images/radar_visualization.jpg" width="480" alt="Radar visualization"/></p>
+<p align="center"><img src="<img width="1080" height="917" alt="Radar" src="https://github.com/user-attachments/assets/88d7e0cb-f501-4e37-87b9-032d18ea47dd" />
+" width="480" alt="Radar visualization"/></p>
 
 ## Bonus: phone Wi-Fi control
 
@@ -291,12 +296,6 @@ eva-esp32-robotic-head/
 ## Skills demonstrated
 
 `Embedded C/C++` · `Interrupt-driven I/O` · `Digital signal filtering` · `Finite-state machine design` · `Event-driven architecture` · `Cooperative real-time scheduling` · `I²C / PWM / GPIO interfacing` · `Voltage-divider circuit design` · `Serial protocol design` · `PC-side visualization (Processing/Java)` · `Wi-Fi AP + HTTP control` · `Hardware bring-up & incremental testing`
-
-## Future work
-
-- MOSFET-based servo power-control stage with supply decoupling (hardware + firmware co-design)
-- Merge the Wi-Fi control prototype into the main firmware behind a feature flag
-- Replace single-point ultrasonic sensing with a multi-sensor array for coarse spatial resolution
 
 ## References
 
