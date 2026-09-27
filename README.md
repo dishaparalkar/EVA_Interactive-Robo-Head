@@ -1,36 +1,41 @@
 # EVA — ESP32-Based Interactive Robotic Head
 
-[![Platform](https://img.shields.io/badge/platform-ESP32-blue)](#)
-[![Language](https://img.shields.io/badge/firmware-C%2B%2B%20(Arduino)-00979D)](#)
-[![Visualization](https://img.shields.io/badge/visualization-Processing-005C5C)](#)
-[![License](https://img.shields.io/badge/license-MIT-green)](#license)
-[![Status](https://img.shields.io/badge/status-active-brightgreen)](#)
+<p align="center">
 
-> An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization — all running on a single ESP32 with a cooperative non-blocking scheduler.
+![Platform](https://img.shields.io/badge/platform-ESP32-blue)
+![Firmware](https://img.shields.io/badge/firmware-C%2B%2B%20(Arduino)-00979D)
+![Visualization](https://img.shields.io/badge/visualization-Processing-005C5C)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-active-brightgreen)
+
+</p>
+
+> An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization using an ESP32 with a cooperative non-blocking scheduler.
 
 <p align="center">
-  <img src=""D:\EVA\Images & Shorts\Normal mode.jpeg"" />
-" width="300" alt="EVA Normal Mode"/>
+  <img src="docs/images/eva_front.jpg" width="400" alt="EVA Interactive Robotic Head">
 </p>
 
 ---
 
-## Table of contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Demo](#demo)
 - [Features](#features)
-- [System architecture](#system-architecture)
+- [System Architecture](#system-architecture)
 - [Hardware](#hardware)
-- [Firmware architecture](#firmware-architecture)
-- [Core algorithms](#core-algorithms)
-- [Operating modes](#operating-modes)
-- [Radar visualization (Processing)](#radar-visualization-processing)
-- [Bonus: phone Wi-Fi control](#bonus-phone-wi-fi-control)
-- [Repository structure](#repository-structure)
-- [Getting started](#getting-started)
-- [Testing & validation](#testing--validation)
-- [Skills demonstrated](#skills-demonstrated)
+- [Circuit Design](#circuit-design)
+- [Firmware Architecture](#firmware-architecture)
+- [Core Algorithms](#core-algorithms)
+- [Operating Modes](#operating-modes)
+- [Radar Visualization](#radar-visualization)
+- [Wi-Fi Control Prototype](#wi-fi-control-prototype)
+- [Testing and Validation](#testing-and-validation)
+- [Repository Structure](#repository-structure)
+- [Getting Started](#getting-started)
+- [Skills Demonstrated](#skills-demonstrated)
+- [Future Work](#future-work)
 - [References](#references)
 - [License](#license)
 
@@ -38,93 +43,140 @@
 
 ## Overview
 
-EVA is an ESP32-based interactive robotic head that fuses **sensing → processing → response → visualization** into one embedded system:
+EVA is an ESP32-based interactive robotic head that combines:
 
-- **HC-SR04** ultrasonic sensor for distance measurement
-- **TTP223** capacitive touch sensor for interaction
-- **SSD1306 OLED** for expressions and live status
-- **SG90 servo** for head movement / environment scanning
-- **5× LEDs** for at-a-glance distance indication
-- A **Processing (Java)** desktop app for real-time radar visualization
-- A **Wi-Fi prototype** for phone-based remote control
+**Sensing → Processing → Decision → Response → Visualization**
 
-The firmware is built around a **finite-state behavioural model** and a **cooperative, non-blocking scheduler** — not a chain of `delay()` calls — so sensing, movement, display updates, and telemetry all run concurrently on a single core.
+### Main hardware
 
-## Demo
+- **ESP32-WROOM-32** — main microcontroller
+- **HC-SR04** — ultrasonic distance sensing
+- **TTP223** — capacitive touch interaction
+- **SSD1306 OLED** — expressions and system status
+- **SG90 servo** — head movement and scanning
+- **5 LEDs** — distance indication
 
-## Demo
+A separate **Processing** application provides real-time radar visualization from serial telemetry.
+
+The firmware uses a **finite-state machine (FSM)**, **event-driven architecture**, **interrupt-based sensing**, and a **cooperative non-blocking scheduler**.
+
+---
+
+# Demo
+
+## EVA Physical Prototype
+
+<p align="center">
+  <img src="docs/images/eva_front.jpg" width="400" alt="EVA physical prototype">
+</p>
+
+---
+
+## Operating Modes
 
 <table>
-  <tr>
-    <th>Normal Mode</th>
-    <th>Observation Mode</th>
-    <th>Radar Visualization</th>
-    <th>Wi-Fi Control</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="![Uploading Normal mode.jpeg…]()
-" width="220">
-    </td>
-    <td align="center">
-      <img src="docs/images/eva_observation.jpg" width="220">
-    </td>
-    <td align="center">
-      <img src="docs/images/radar_visualization.jpg" width="220">
-    </td>
-    <td align="center">
-      <img src="docs/images/wifi_control_ui.jpg" width="220">
-    </td>
-  </tr>
+<tr>
+<th align="center">Normal Mode</th>
+<th align="center">Observation Mode</th>
+</tr>
+
+<tr>
+<td align="center">
+<img src="docs/images/eva_normal.jpg" width="280" alt="EVA Normal Mode">
+</td>
+
+<td align="center">
+<img src="docs/images/eva_observation.jpg" width="280" alt="EVA Observation Mode">
+</td>
+</tr>
 </table>
 
-## Features
+---
 
-- Interrupt-based ultrasonic echo timing (no blocking `pulseIn`)
-- 5-sample median filtering with valid-range rejection (3–200 cm)
-- Confirmation-based person detection (debounced entry/exit logic)
-- Cooperative, priority-free task scheduler (touch/servo/OLED/sensor/radar run at independent periods)
-- Ring-buffer event queue driving a 4-state behavioural FSM
-- Animated OLED expressions (sleepy, happy, love) + live diagnostics screen
-- Servo-driven 180° environmental scan with serial telemetry
-- Real-time radar rendering in Processing from live serial data
-- Standalone Wi-Fi access-point prototype for phone-based remote control
+## Radar Visualization
 
-## System architecture
+<p align="center">
+  <img src="docs/images/radar_visualization.jpg" width="550" alt="EVA radar visualization">
+</p>
+
+---
+
+## Wi-Fi Control Prototype
+
+<p align="center">
+  <img src="docs/images/wifi_control_ui.jpg" width="500" alt="EVA Wi-Fi control interface">
+</p>
+
+---
+
+# Features
+
+- Interrupt-driven HC-SR04 echo timing
+- 5-sample median filtering
+- Valid-distance rejection from 3–200 cm
+- Confirmation-based person detection
+- Cooperative non-blocking task scheduler
+- Event-driven architecture using a ring buffer
+- Finite-state machine for behavioural control
+- Animated OLED expressions
+- Servo-based environmental scanning
+- Distance indication using five LEDs
+- Serial radar telemetry
+- Real-time Processing radar visualization
+- Standalone ESP32 Wi-Fi control prototype
+
+---
+
+# System Architecture
 
 ```mermaid
 flowchart LR
+
     subgraph Sensing
         A[HC-SR04 Ultrasonic]
         B[TTP223 Touch]
     end
-    subgraph Processing["ESP32 — Processing"]
-        C[Median Filter + Validation]
-        D[Person Detection Logic]
-        E[Finite-State Machine]
-        F[Cooperative Scheduler]
+
+    subgraph Processing["ESP32 Processing"]
+        C[Signal Validation]
+        D[Median Filter]
+        E[Person Detection]
+        F[Finite-State Machine]
+        G[Event Queue]
+        H[Cooperative Scheduler]
     end
+
     subgraph Response
-        G[SG90 Servo]
-        H[SSD1306 OLED]
-        I[5x Distance LEDs]
+        I[SG90 Servo]
+        J[SSD1306 OLED]
+        K[5x LEDs]
     end
+
     subgraph Visualization
-        J[Serial Link]
-        K[Processing Radar App]
+        L[UART Serial]
+        M[Processing Radar]
     end
 
-    A --> C --> D --> E
-    B --> E
-    F -.orchestrates.-> C
-    F -.orchestrates.-> G
-    F -.orchestrates.-> H
-    E --> G
-    E --> H
-    C --> I
-    E --> J --> K
-```
+    A --> C
+    C --> D
+    D --> E
+    E --> F
 
+    B --> G
+    E --> G
+    G --> F
+
+    H -.-> C
+    H -.-> I
+    H -.-> J
+    H -.-> L
+
+    F --> I
+    F --> J
+    D --> K
+
+    F --> L
+    L --> M
 ## Hardware
 
 ### Bill of materials
