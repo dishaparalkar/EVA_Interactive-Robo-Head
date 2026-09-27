@@ -9,7 +9,8 @@
 > An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization — all running on a single ESP32 with a cooperative non-blocking scheduler.
 
 <p align="center">
-  <img src="docs/images/eva_front.jpg" width="360" alt="EVA physical prototype"/>
+  <img src="<img width="1080" height="1436" alt="Normal mode" src="https://github.com/user-attachments/assets/80748820-0f47-4d06-98de-a4076351dce9" />
+" width="360" alt="EVA physical prototype"/>
 </p>
 
 ---
