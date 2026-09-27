@@ -35,7 +35,6 @@
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
 - [Skills Demonstrated](#skills-demonstrated)
-- [Future Work](#future-work)
 - [References](#references)
 - [License](#license)
 
@@ -127,56 +126,41 @@ The firmware uses a **finite-state machine (FSM)**, **event-driven architecture*
 
 ---
 
-# System Architecture
+## System architecture
 
 ```mermaid
 flowchart LR
-
     subgraph Sensing
         A[HC-SR04 Ultrasonic]
         B[TTP223 Touch]
     end
-
-    subgraph Processing["ESP32 Processing"]
-        C[Signal Validation]
-        D[Median Filter]
-        E[Person Detection]
-        F[Finite-State Machine]
-        G[Event Queue]
-        H[Cooperative Scheduler]
+    subgraph Processing["ESP32 — Processing"]
+        C[Median Filter + Validation]
+        D[Person Detection Logic]
+        E[Finite-State Machine]
+        F[Cooperative Scheduler]
     end
-
     subgraph Response
-        I[SG90 Servo]
-        J[SSD1306 OLED]
-        K[5x LEDs]
+        G[SG90 Servo]
+        H[SSD1306 OLED]
+        I[5x Distance LEDs]
     end
-
     subgraph Visualization
-        L[UART Serial]
-        M[Processing Radar]
+        J[Serial Link]
+        K[Processing Radar App]
     end
 
-    A --> C
-    C --> D
-    D --> E
-    E --> F
-
-    B --> G
+    A --> C --> D --> E
+    B --> E
+    F -.orchestrates.-> C
+    F -.orchestrates.-> G
+    F -.orchestrates.-> H
     E --> G
-    G --> F
+    E --> H
+    C --> I
+    E --> J --> K
+```
 
-    H -.-> C
-    H -.-> I
-    H -.-> J
-    H -.-> L
-
-    F --> I
-    F --> J
-    D --> K
-
-    F --> L
-    L --> M
 ## Hardware
 
 ### Bill of materials
@@ -213,8 +197,7 @@ HC-SR04 ECHO
     GND
 ```
 
-<p align="center"><img src="<img width="1600" height="1080" alt="circuit_dia" src="https://github.com/user-attachments/assets/ad97a304-1bfa-495c-b434-3368d1ca69db" />
-" width="640" alt="Full circuit diagram"/></p>
+<p align="center"><img src="docs/images/circuit_diagram.png" width="640" alt="Full circuit diagram"/></p>
 
 ## Firmware architecture
 
@@ -297,8 +280,7 @@ RADAR,90,45.2,1
 
 A companion **Processing** sketch parses this stream and renders a live 0°–180°, 0–100 cm radar sweep with per-angle detection history.
 
-<p align="center"><img src="<img width="1080" height="917" alt="Radar" src="https://github.com/user-attachments/assets/88d7e0cb-f501-4e37-87b9-032d18ea47dd" />
-" width="480" alt="Radar visualization"/></p>
+<p align="center"><img src="docs/images/radar_visualization.jpg" width="480" alt="Radar visualization"/></p>
 
 ## Bonus: phone Wi-Fi control
 
@@ -365,6 +347,7 @@ eva-esp32-robotic-head/
 ## Skills demonstrated
 
 `Embedded C/C++` · `Interrupt-driven I/O` · `Digital signal filtering` · `Finite-state machine design` · `Event-driven architecture` · `Cooperative real-time scheduling` · `I²C / PWM / GPIO interfacing` · `Voltage-divider circuit design` · `Serial protocol design` · `PC-side visualization (Processing/Java)` · `Wi-Fi AP + HTTP control` · `Hardware bring-up & incremental testing`
+
 
 ## References
 
