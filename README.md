@@ -278,24 +278,24 @@ A standalone prototype turns the ESP32 into its own Wi-Fi access point with a li
 ## Repository structure
 
 ```
-eva-esp32-robotic-head/
+Interactive-Robo-Head-/
 ├── README.md
-├── LICENSE
-├── .gitignore
-├── docs/
-│   ├── EVA_Project_Report.pdf
-│   ├── EVA_Presentation.pdf
-│   └── images/
-├── firmware/
-│   ├── eva_main/              # primary firmware (sensing, FSM, scheduler)
-│   │   └── eva_main.ino
-│   └── wifi_prototype/        # standalone Wi-Fi control sketch
-│       └── eva_wifi_control.ino
+├── src/
+│   ├── EVA_2.0.ino
+│   └── Phone_wifi.ino
 ├── processing_radar/
-│   └── eva_radar_visualizer.pde
-└── hardware/
-    ├── schematic.png
-    └── bom.md
+│   └── EVA_RADAR.pde
+└── doc/
+    ├── ES_Project_Report_24f2100363.pdf
+    ├── EVA_ppt.pdf
+    └── images/
+        ├── Circuit.jpeg
+        ├── Normal mode.jpeg
+        ├── Observation.jpeg
+        ├── Radar.jpeg
+        ├── circuit_dia.jpeg
+        ├── control_web.jpeg
+        └── wifi ready.jpeg
 ```
 
 ## Getting started
