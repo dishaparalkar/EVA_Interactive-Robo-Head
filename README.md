@@ -9,8 +9,8 @@
 > An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization — all running on a single ESP32 with a cooperative non-blocking scheduler.
 
 <p align="center">
-  <img width="1080" height="1436" alt="Normal mode" src="https://github.com/user-attachments/assets/41663bb1-2c0b-436b-9601-1949a57c8e1a" />
-
+  <img src="<img width="1080" height="1436" alt="Normal mode" src="https://github.com/user-attachments/assets/387b4168-76ca-40ac-8dd5-d39c08115d5e" />
+" width="300" alt="EVA Normal Mode"/>
 </p>
 
 ---
@@ -63,7 +63,8 @@ The firmware is built around a **finite-state behavioural model** and a **cooper
   </tr>
   <tr>
     <td align="center">
-      <img src="docs/images/eva_normal.jpg" width="220">
+      <img src="![Uploading Normal mode.jpeg…]()
+" width="220">
     </td>
     <td align="center">
       <img src="docs/images/eva_observation.jpg" width="220">
