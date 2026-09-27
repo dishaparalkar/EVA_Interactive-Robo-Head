@@ -1,13 +1,5 @@
 # EVA — ESP32-Based Interactive Robotic Head
 
-<p align="center">
-
-![Platform](https://img.shields.io/badge/platform-ESP32-blue)
-![Firmware](https://img.shields.io/badge/firmware-C%2B%2B%20(Arduino)-00979D)
-![Visualization](https://img.shields.io/badge/visualization-Processing-005C5C)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-active-brightgreen)
-
 </p>
 
 > An embedded systems project combining real-time sensing, signal filtering, event-driven behaviour, servo control, OLED graphics, and PC-side radar visualization using an ESP32 with a cooperative non-blocking scheduler.
