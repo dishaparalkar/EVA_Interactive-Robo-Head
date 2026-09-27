@@ -1,0 +1,484 @@
+# EVA — ESP32 Interactive Robotic Head
+
+EVA is an ESP32-based interactive robotic head developed as an embedded systems project. The system combines **sensor interfacing, real-time firmware architecture, signal processing, actuator control, event-driven behaviour, and PC-based visualization**.
+
+The firmware is designed around a **Finite-State Machine (FSM), interrupt-driven sensing, median filtering, event handling, and cooperative non-blocking scheduling**.
+
+---
+
+## Engineering Highlights
+
+- Finite-State Machine (FSM) for behaviour management
+- Event-driven architecture using a fixed-size ring buffer
+- Cooperative non-blocking scheduler
+- Interrupt-driven ultrasonic time-of-flight measurement
+- Five-sample median filtering
+- Sensor validation and fault detection
+- Threshold-based detection with confirmation logic
+- I²C communication with SSD1306 OLED
+- PWM-based servo control
+- GPIO-based sensor and actuator interfacing
+- UART/serial telemetry
+- PC-based radar visualization using Processing
+- Hardware–firmware integration and validation
+
+---
+
+## System Overview
+
+EVA uses an ESP32 as the central controller. Sensor inputs are processed by the firmware and converted into system events and behavioural responses.
+
+```text
+                         ┌─────────────────────┐
+                         │        ESP32        │
+                         │  Central Controller │
+                         └──────────┬──────────┘
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              ▼                     ▼                     ▼
+          HC-SR04                TTP223               SSD1306
+      Distance Sensing         Touch Input           OLED / I²C
+              │                     │                     │
+              └─────────────────────┼─────────────────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │  Firmware Processing │
+                         │                     │
+                         │  • Validation       │
+                         │  • Filtering        │
+                         │  • Detection        │
+                         │  • FSM              │
+                         │  • Event Handling   │
+                         │  • Scheduler        │
+                         └──────────┬──────────┘
+                                    │
+                         ┌──────────┴──────────┐
+                         ▼                     ▼
+                       Servo                 LEDs
+                  Head Movement        Distance Indication
+                         │
+                         ▼
+                  Serial Telemetry
+                         │
+                         ▼
+                 Processing Radar
+Core Firmware Architecture
+
+The EVA firmware uses a cooperative time-based scheduler instead of a blocking sequential loop.
+
+Different tasks are executed according to their required update periods.
+
+Task	Period
+Touch	20 ms
+Servo	20 ms
+OLED	40 ms
+Sensor	60 ms
+Radar	60 ms
+Telemetry	1 s
+
+The main loop primarily calls the scheduler update function, allowing multiple system activities to operate without long blocking delays.
+
+Ultrasonic Distance Measurement
+
+The HC-SR04 is used for distance measurement.
+
+The ESP32 generates a 10 µs trigger pulse and measures the echo pulse width using interrupt-based edge detection.
+
+TRIG → GPIO 5
+ECHO → GPIO 23
+
+The rising edge records the start time and the falling edge determines the echo duration.
+
+The measured distance is calculated from the echo pulse duration.
+
+Valid measurements are restricted to:
+
+3 cm ≤ distance ≤ 200 cm
+
+A timeout prevents the system from remaining blocked when a valid echo is not received.
+
+Signal Validation and Median Filtering
+
+Ultrasonic measurements may occasionally contain invalid or abnormal readings.
+
+EVA uses:
+
+Valid range: 3–200 cm
+Five-sample median filter
+Consecutive bad-reading detection
+
+Recent valid measurements are sorted and the middle value is selected as the median.
+
+This reduces the effect of isolated abnormal measurements and provides more stable distance data for the detection logic.
+
+HC-SR04 Logic-Level Interface
+
+The HC-SR04 operates at 5 V while the ESP32 uses 3.3 V logic.
+
+The ECHO signal is therefore connected to GPIO 23 through a resistor divider.
+
+HC-SR04 ECHO
+      │
+    1 kΩ
+      │
+      ├────── GPIO 23
+      │
+    2 kΩ
+      │
+     GND
+
+The divider produces approximately 3.3 V at the ESP32 input.
+
+Person Detection
+
+EVA does not declare a person detected from a single ultrasonic measurement.
+
+In Normal Mode, a filtered distance within the 3–60 cm range is treated as a close-object condition.
+
+Two consecutive close readings are required to confirm detection.
+
+When the detected object moves away, exit confirmation and timing conditions are used before declaring that the person has left.
+
+Distance Reading
+       ↓
+     Valid?
+    ↙      ↘
+   No       Yes
+   ↓         ↓
+ Fault   Median Filter
+             ↓
+          ≤ 60 cm?
+          ↙     ↘
+        Yes      No
+         ↓        ↓
+ Confirmation   Exit Logic
+         ↓
+   Person Detected
+Distance Indicator
+
+Five LEDs provide distance-based visual feedback.
+
+LED	Threshold
+LED1	≤100 cm
+LED2	≤80 cm
+LED3	≤60 cm
+LED4	≤40 cm
+LED5	≤20 cm
+
+Each LED uses a 220 Ω current-limiting resistor.
+
+Touch Interface
+
+The TTP223 provides touch-based interaction through GPIO 4.
+
+Debounce handling prevents false or repeated touch events.
+
+Short touch → Touch event / LOVE behaviour
+Long press → Operating mode change
+OLED Interface
+
+EVA uses an SSD1306 128×64 OLED through I²C.
+
+Connection	ESP32
+SDA	GPIO 21
+SCL	GPIO 22
+VCC	3.3 V
+GND	GND
+I²C Address	0x3C
+
+The OLED provides visual feedback through:
+
+Sleepy expression
+Happy expression
+Love expression
+Observation information
+Detection information
+Servo Control
+
+The SG90 servo provides physical movement of the robotic head.
+
+Servo Signal → GPIO 19
+Frequency    → 50 Hz
+
+The firmware uses pulse-width control and incremental position updates.
+
+Behaviour	Angular Range
+Normal Mode	30°–150°
+Observation Mode	0°–180°
+Love Expression	84°–96°
+
+The motion engine updates the servo position incrementally so that servo movement does not block other system tasks.
+
+Finite-State Behaviour
+
+EVA uses state-based behaviour to determine its current response.
+
+The main behavioural states are:
+
+SLEEPY
+HAPPY
+LOVE
+OBSERVATION
+Normal Mode
+No person detected → SLEEPY
+
+Person detected     → HAPPY
+
+Touch detected      → LOVE
+
+The state-based architecture separates system condition from the corresponding physical and visual response.
+
+Event-Driven Architecture
+
+Instead of directly executing every response inside sensor-reading functions, EVA uses an event-driven approach.
+
+Important events include:
+
+Person entered
+Person left
+Touch pressed
+Mode changed
+
+Events are stored in a fixed-size ring buffer and processed by the event handler.
+
+This separates:
+
+Event Detection
+      ↓
+Event Queue
+      ↓
+Event Processing
+      ↓
+Behaviour Response
+Observation Mode
+
+Observation Mode extends EVA from interactive behaviour to environmental scanning.
+
+The servo continuously scans:
+
+0° → 180°
+
+The observation detection zone is:
+
+20 cm ≤ distance ≤ 100 cm
+
+The system records detection episodes and maintains an estimated current occupancy.
+
+A single HC-SR04 cannot identify individual people or distinguish multiple unique people simultaneously. Therefore, Observation Mode represents detection episodes and estimated occupancy rather than unique human identities.
+
+Radar Data Pipeline
+
+During Observation Mode, EVA sends radar information through serial communication.
+
+Data format:
+
+RADAR,angle,distance,detected
+
+Example:
+
+RADAR,90,45.2,1
+
+Data flow:
+
+HC-SR04
+   ↓
+Distance Measurement
+   ↓
+ESP32
+   ↓
+Servo Angle + Distance
+   ↓
+Serial Communication
+   ↓
+Processing
+   ↓
+Radar Visualization
+Radar Visualization
+
+A Processing application receives the serial data and maps the measured angle and distance onto a radar display.
+
+Angular Range    → 0°–180°
+Distance Range   → 0–100 cm
+
+The visualization maintains distance and detection history for each scan angle.
+
+GPIO Mapping
+Device	Function	ESP32 GPIO
+OLED	SDA	21
+OLED	SCL	22
+HC-SR04	TRIG	5
+HC-SR04	ECHO	23
+TTP223	OUT	4
+SG90 Servo	Signal	19
+LED1	Distance indication	13
+LED2	Distance indication	12
+LED3	Distance indication	14
+LED4	Distance indication	26
+LED5	Distance indication	25
+Power and Logic Architecture
+
+The ESP32 development board provides the required power rails.
+
+ESP32 3.3 V
+    ├── OLED
+    └── TTP223
+
+ESP32 5 V / VIN
+    ├── HC-SR04
+    └── SG90 Servo
+
+ESP32 GND
+    └── Common Ground
+
+The HC-SR04 ECHO line uses a 1 kΩ / 2 kΩ resistor divider before connection to GPIO 23.
+
+Hardware
+Controller
+ESP32-WROOM-32
+Sensors and Interfaces
+HC-SR04 ultrasonic sensor
+TTP223 capacitive touch sensor
+SSD1306 128×64 OLED
+Actuator
+SG90 micro servo
+Indicators
+5 LEDs
+5 × 220 Ω current-limiting resistors
+Logic-Level Interface
+1 × 1 kΩ resistor
+1 × 2 kΩ resistor
+Software Stack
+Layer	Technology
+Microcontroller	ESP32
+Firmware	Arduino C++
+Display Interface	I²C
+Servo Control	PWM
+Sensor Timing	Interrupt-based edge detection
+PC Communication	Serial / UART
+Radar Visualization	Processing
+Circuit Simulation	Wokwi
+Development	Arduino IDE
+Testing and Validation
+
+Testing was performed incrementally from individual hardware interfaces to complete system behaviour.
+
+Hardware Tests
+ESP32
+OLED
+HC-SR04
+TTP223
+Servo
+LEDs
+Integration Tests
+Distance measurement
+Distance-based LED indication
+Person detection
+Touch interaction
+Servo scanning
+OLED expressions
+Observation Mode
+Radar communication
+
+The prototype demonstrates:
+
+Distance-based interaction
+Touch-based interaction
+Servo movement
+OLED expressions
+Observation scanning
+PC-based radar visualization
+Project Structure
+Interactive-Robo-Head/
+│
+├── README.md
+│
+├── src/
+│   └── EVA_2.0.2.ino
+│
+├── docs/
+│   ├── report/
+│   ├── presentation/
+│   ├── circuit/
+│   ├── architecture/
+│   └── photos/
+│
+├── simulation/
+│   └── wokwi/
+│       ├── diagram.json
+│       ├── sketch.ino
+│       └── README.md
+│
+├── visualization/
+│   └── processing/
+│       └── radar_visualization.pde
+│
+├── prototype/
+│   └── wifi_control/
+│       └── wifi_control.ino
+│
+└── hardware/
+    └── README.md
+Supporting Wi-Fi Prototype
+
+A separate Wi-Fi prototype was developed for remote control of selected EVA functions.
+
+The prototype provides commands for:
+
+Servo movement
+OLED expressions
+System status
+Stop command
+
+This prototype is maintained separately from the main EVA firmware and is not part of the primary control architecture.
+
+Current Status
+
+Functional embedded prototype
+
+Implemented:
+
+Ultrasonic sensing
+Sensor validation
+Median filtering
+Person detection
+Touch interaction
+FSM-based behaviour
+Event-driven control
+OLED expressions
+Servo actuation
+Distance indication
+Normal Mode
+Observation Mode
+Serial radar telemetry
+Processing radar visualization
+Cooperative non-blocking scheduling
+Key Embedded Systems Concepts Demonstrated
+GPIO Interfacing
+       ↓
+I²C Communication
+       ↓
+Interrupt-Based Timing
+       ↓
+Signal Filtering
+       ↓
+Event Detection
+       ↓
+Finite-State Machine
+       ↓
+Event-Driven Control
+       ↓
+Cooperative Scheduling
+       ↓
+Actuator Control
+       ↓
+Serial Telemetry
+       ↓
+PC Visualization
+Author
+
+Disha Paralkar
+
+BS in Electronic Systems
+IIT Madras
